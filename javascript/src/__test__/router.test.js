@@ -1,5 +1,4 @@
-const app = require('../router')
-require('iconv-lite').encodingExists('foo')
+const router = require('../router')
 const request = require("supertest")
 
 describe('User API', () => {

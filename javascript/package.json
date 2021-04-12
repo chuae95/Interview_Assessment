@@ -2,6 +2,9 @@
   "name": "school-administration-system",
   "version": "1.0.0",
   "description": "This is a system which School administrators and Teachers can perform administrative functions on their students",
+  "jest": {
+    "testEnvironment": "node"
+  },
   "scripts": {
     "test": "jest",
     "build": "babel src --out-dir build",
@@ -22,6 +25,7 @@
     "http-status-codes": "^1.4.0",
     "mysql2": "^2.1.0",
     "sequelize": "^6.3.3",
+    "supertest": "^6.1.3",
     "winston": "^3.3.3"
   },
   "devDependencies": {
