@@ -47,18 +47,7 @@ router.post("/register", async (req, res) => {
       info.save()
     }
   }
-
-
-  // if (classSubject) {
-  //   let info = await StudentClass.findAll({where : {"classSubjectID" : classSubject.id}})
-  // } else {
-  //   let newClass = await ProfileClass.create({"teacherID" : req.body.teacherID,"classID" : req.body.classID,"subjectID" : req.body.subjectID})
-  //   for (const student in req.body.students) {
-  //     let info = await StudentClass.create({ "classSubjectID" : newClass.id, "studentID" : student })
-  //     info.save()
-  //   }
-  // }
-  res.status(200).json({"message" : "Route hit"})
+  res.status(204)
 
 })
 
