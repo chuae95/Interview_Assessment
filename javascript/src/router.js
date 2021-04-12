@@ -30,7 +30,7 @@ router.post('/register', async (req, res) => {
         let data = await Profile.update({name, email, is_Student, is_Teacher},{where : {"email": email}})
       } else {
       let data = await Profile.create({name, email, is_Student, is_Teacher})}
-    } 
+    }
     else if (req.body.subjectCode && req.body.name) {
       let {subjectCode, name} = req.body
       let subject = await Subject.findOne({where : {"subjectCode" : subjectCode}})
@@ -61,9 +61,24 @@ router.post('/register', async (req, res) => {
 
 
 router.get('/reports/workload', async (req, res) => {
-  let profileClass = await ProfileClass.findAndCountAll({attributes: ['teacherID', 'subjectID'], group:['teacherID', 'subjectID']})
+  let teacher = await ProfileClass.findAndCountAll({attributes: ['teacherID', 'subjectID'], group:['teacherID', 'subjectID']})
 
-  return res.status(200).json({"Message": "Route hit successfully", "data": profileClass})
+  let data = {}
+
+  for (const x of teacher.count) {
+    let teacher = await Profile.findOne({attributes : ['name'],where : {"id" : x.teacherID}})
+    let subject =  await Subject.findOne({attributes: ['subjectCode', 'name'], where : {"id" : x.subjectID}})
+    subject.dataValues['numberOfClasses'] = x.count
+    if (data[teacher.dataValues.name] !== undefined) {
+      data[teacher.dataValues.name].push(subject.dataValues)
+    } else {
+      data[teacher.dataValues.name] = []
+      data[teacher.dataValues.name].push(subject.dataValues)
+    }
+
+  }
+
+  return res.status(200).json({data})
 })
 
 
