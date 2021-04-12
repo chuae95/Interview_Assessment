@@ -47,7 +47,7 @@ router.post("/register", async (req, res) => {
       info.save()
     }
   }
-  res.status(204)
+  res.status(204).json({"Message": "Data has been added successsfully."})
 
 })
 
