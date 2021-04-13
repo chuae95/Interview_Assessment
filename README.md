@@ -1,4 +1,4 @@
-To initialize the project, kindly run the "npm start" command. The data will be automatically entered by using the build method of Sequelize in the router.js file.
+To initialize the project, kindly run the "npm start" command. The data will be automatically entered by using the build method of Sequelize in the router.js file. If the data is not added on the initial run, running it a second time would update the tables.
 
 Several models have been created in the models folder. These include class, subject and profile JS models.
 2 extra models (profileClass and studentClass) have been to capture information about

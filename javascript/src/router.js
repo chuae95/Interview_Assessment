@@ -1,7 +1,7 @@
 import Express from 'express';
 import HealthcheckController from './controllers/HealthcheckController';
 import sequelize from "./config/database"
-import { USE_PROXY } from 'http-status-codes';
+import { REQUEST_HEADER_FIELDS_TOO_LARGE, USE_PROXY } from 'http-status-codes';
 import { ConsoleTransportOptions } from 'winston/lib/winston/transports';
 
 const Subject = require('../models/subject')
@@ -27,6 +27,11 @@ router.get("/register", async (req,res) => {
 //Assuming that data is posted to this route via a form with TeacherID field, SubjectID field, ClassID field and an array of Students IDs.
 //The only edits that can be done here would be updating the students which are taking each class.
 router.post("/register", async (req, res) => {
+
+  if (req.body.classID == "undefined" || req.body.teacherID == "undefined" || req.body.subjecID == "undefined" || req.body.students == "undefined") {
+    return res.status(400).json({"Message" : "There are missing fields in your entry, kindly revise the changes."})
+  }
+
   let classSubject = await ProfileClass.findOne({where : {"classID" : req.body.classID, "teacherID" : req.body.teacherID, "subjectID" : req.body.subjectID}})
 
   if (classSubject) {
@@ -129,3 +134,44 @@ try {
 }
 
 export default router;
+
+//Initially I thought that the first part of the assessment was asking for a common API which showed all teachers, students, classes and subjects. However, on revision of model, I realised that it was an instance of a classroom and reworked the logic.
+// router.post('/register', async (req, res) => {
+//   try {
+//   if (req.body.name && req.body.email) {
+
+//       let {name, email, is_Student, is_Teacher} = req.body
+//       let profile = await Profile.findOne({where : {"email": email}})
+//       if (profile) {
+//         let data = await Profile.update({name, email, is_Student, is_Teacher},{where : {"email": email}})
+//       } else {
+//       let data = await Profile.create({name, email, is_Student, is_Teacher})
+//       }
+//     } else if (req.body.subjectCode && req.body.name) {
+//         let {subjectCode, name} = req.body
+//         let subject = await Subject.findOne({where : {"subjectCode" : subjectCode}})
+//         if (subject) {
+//           let data = await Subject.update({subjectCode, name}, {where : {"subjectCode" : subjectCode}})
+//         } else {
+//         let data = await Subject.create({subjectCode, name})
+//         }
+//     } else if (req.body.classCode && req.body.name) {
+//         let {classCode, name} = req.body
+//         let classSingle = await Class.findOne({where : {"classCode" : classCode}})
+//         if (classSingle) {
+//           Class.update({classCode,name}, {where : {"classCode" : classCode}})
+//         } else {
+//           let data = await Class.create({classCode,name})
+//         }
+//       } else {
+//         return res.status(400).json({"Message": "Fields were invalid on when post request was submitted"})
+//         }
+//   } catch (e) {
+//       res.status(500).json({"Message": "This is not a valid entry into the database"})
+//     }
+//       let subjects = await Subject.findAll({attributes: ['subjectCode', 'name']})
+//       let students = await Profile.findAll({attributes: ['name','email'], where: {"is_Student": true}})
+//       let teachers = await Profile.findAll({attributes: ['name','email'], where: {"is_Teacher": true}})
+//       let classes = await Class.findAll({attributes: ['classCode', 'name']})
+//       return res.status(200).json({"teachers" : teachers, "students" : students, "subjects": subjects, "classes": classes})
+//   })
